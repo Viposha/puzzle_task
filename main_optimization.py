@@ -1,5 +1,6 @@
 from datetime import datetime
 
+
 start = datetime.now()
 
 # Open the text file and read its content
@@ -24,7 +25,7 @@ for num in numbers_list:
 print(first_two_dict)
 
 # All chains
-all_possible_chains = []
+longest_chain = []
 
 # For each starting number, explore all chains
 for num in numbers_list:
@@ -43,12 +44,14 @@ for num in numbers_list:
                 if next_number not in current_chain:  # Avoid loops by not revisiting numbers in the current chain
                     new_chain = current_chain + [next_number]
                     stack.append((next_number, new_chain))  # Add the new chain to stack
-        else:
-            # If no further matches, add the current chain to the list of all possible chains
-            all_possible_chains.append(current_chain)
 
-# Print longest chain
-longest_chain = max(all_possible_chains, key=len)
+                    # Update longest chain if the new chain is longer
+                    if len(new_chain) > len(longest_chain):
+                        longest_chain = new_chain
+        else:
+            # If no further matches, check the chain length (not stored anymore)
+            if len(current_chain) > len(longest_chain):
+                longest_chain = current_chain
 
 # Manage answer to string
 result = str(longest_chain[0])
