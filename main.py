@@ -3,8 +3,13 @@ from decorators.time_measure_decor import time_measure
 
 def get_numbers_from_file(file):
     """ Open the text file and read its content and returns as a list"""
-    with open(file, "r") as file:
-        return file.read().split('\n')
+    try:
+        with open(file, "r") as file:
+            return file.read().split('\n')
+    except FileNotFoundError as error:
+        print(f"File {file} not found")
+        return []
+
 
 
 def first_two_dict(numbers):

@@ -6,9 +6,28 @@ def test_numbers():
     numbers = ['776543', '435689', '564543', '893422', '664477', '668713']
     return numbers
 
+@pytest.fixture
+def test_file(tmp_path):
+    data = '776543\n435689\n564543\n893422\n664477\n668713'
+    test_file = tmp_path / "test_numbers.txt"
+    test_file.write_text(data)
+    return test_file
+
 
 def test_get_first_two_dict(test_numbers):
     result = first_two_dict(test_numbers)
     assert result['66'] == ['664477', '668713']
     assert result['43'] == ['435689']
+
+
+def test_get_numbers_from_file(test_file):
+    result = get_numbers_from_file(test_file)
+    assert len(result) == 6
+    assert '435689' in result
+
+def test_get_numbers_from_error_file():
+    result = get_numbers_from_file('error.txt')
+    assert result == []
+
+
 
