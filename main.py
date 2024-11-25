@@ -1,66 +1,83 @@
 from datetime import datetime
 
-start = datetime.now()
 
-# Open the text file and read its content
-with open("numbers.txt", "r") as file:
-    content = file.read()
+def time_measure(func):
+    """Decorator for measure time of func execution"""
+    def wrapper(*args, **kwargs):
+        start = datetime.now()
+        result = func(*args, **kwargs)
+        finish = datetime.now()
+        func_time = finish - start
+        print(f"Time for execution:  {round(func_time.total_seconds(), 2)} seconds.")
+        return result
+    return wrapper
 
-# Split the content into a list of numbers
-numbers_list = content.split('\n')
 
-print(numbers_list)
+def get_numbers_from_file(file):
+    """ Open the text file and read its content and returns as a list"""
+    with open(file, "r") as file:
+        return file.read().split('\n')
 
-# Set dict with first two numbers as keys
-first_two_dict = {}
 
-for num in numbers_list:
-    key = str(num)[:2]
-    if key in first_two_dict:
-        first_two_dict[key].append(num)  # Append to the existing list
-    else:
-        first_two_dict[key] = [num]
-
-print(first_two_dict)
-
-# All chains
-all_possible_chains = []
-
-# For each starting number, explore all chains
-for num in numbers_list:
-    start_number = num
-    stack = [(start_number, [start_number])]  # Stack to manage the chains
-
-    while stack:
-        current_number, current_chain = stack.pop()
-
-        # Get the last two digits of the current number to find possible continuations
-        key = current_number[-2:]
-
+def first_two_dict(numbers):
+    """ Creates dict with first two numbers as keys and values are numbers"""
+    first_two_dict = {}
+    for num in numbers:
+        key = str(num)[:2]
         if key in first_two_dict:
-            # Explore all possible next numbers for this key
-            for next_number in first_two_dict[key]:
-                if next_number not in current_chain:  # Avoid loops by not revisiting numbers in the current chain
-                    new_chain = current_chain + [next_number]
-                    stack.append((next_number, new_chain))  # Add the new chain to stack
+            first_two_dict[key].append(num)  # Append to the existing list
         else:
-            # If no further matches, add the current chain to the list of all possible chains
-            all_possible_chains.append(current_chain)
+            first_two_dict[key] = [num]
+    return first_two_dict
 
-# Print longest chain
-longest_chain = max(all_possible_chains, key=len)
 
-# Manage answer to string
-result = str(longest_chain[0])
-for i in range(1, len(longest_chain)):
-    result += str(longest_chain[i])[2:]
+@time_measure
+def get_longest_chain(numbers, dict_numbers):
+    """Main logic for searching longest chain"""
+    longest_chain = []
 
-finish = datetime.now()
+    # For each starting number, explore all chains
+    for num in numbers:
+        start_number = num
+        stack = [(start_number, [start_number])]  # Stack to manage the chains
 
-func_time = finish - start
+        while stack:
+            current_number, current_chain = stack.pop()
 
-print(len(longest_chain))
+            # Get the last two digits of the current number to find possible continuations
+            key = current_number[-2:]
+            if key in dict_numbers:
+                # Explore all possible next numbers for this key
+                for next_number in dict_numbers[key]:
+                    if next_number not in current_chain:  # Avoid loops by not revisiting numbers in the current chain
+                        new_chain = current_chain + [next_number]
+                        stack.append((next_number, new_chain))  # Add the new chain to stack
 
-print(f'Time for execution is {round(func_time.total_seconds(),2)} seconds')
+                        # Update longest chain if the new chain is longer
+                        if len(new_chain) > len(longest_chain):
+                            longest_chain = new_chain
+            else:
+                # If no further matches, check the chain length (not stored anymore)
+                if len(current_chain) > len(longest_chain):
+                    longest_chain = current_chain
+    return longest_chain
 
-print(f'Result: {result}')
+def fix_chain(chain):
+    """Manage answer to string"""
+    result = str(chain[0])
+    for i in range(1, len(chain)):
+        result += str(chain[i])[2:]
+    return result
+
+
+def main():
+    file_path = "nums.txt"
+    numbers = get_numbers_from_file(file_path)
+    two_dict = first_two_dict(numbers)
+    longest_chain = get_longest_chain(numbers, two_dict)
+    result = fix_chain(longest_chain)
+    print(f"Longest chain length: {len(longest_chain)} numbers")
+    print(f'Result: {result}')
+
+if __name__ == "__main__":
+    main()
