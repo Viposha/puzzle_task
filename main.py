@@ -71,6 +71,7 @@ def main():
     result = fix_chain(longest_chain)
     print(f"Longest chain length: {len(longest_chain)} numbers")
     print(f'Result: {result}')
+    print(f'There are {len(result)} characters in result')
 
 
 if __name__ == "__main__":
