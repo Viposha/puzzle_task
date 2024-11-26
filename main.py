@@ -64,13 +64,14 @@ def fix_chain(chain):
 
 
 def main():
-    file_path = "nums.txt"
+    file_path = "numbers.txt"
     numbers = get_numbers_from_file(file_path)
     two_dict = first_two_dict(numbers)
     longest_chain = get_longest_chain(numbers, two_dict)
     result = fix_chain(longest_chain)
     print(f"Longest chain length: {len(longest_chain)} numbers")
     print(f'Result: {result}')
+
 
 if __name__ == "__main__":
     main()
