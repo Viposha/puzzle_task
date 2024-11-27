@@ -74,5 +74,5 @@ def main():
     print(f'There are {len(result)} characters in result')
 
 
-if __name__ == "__main__":
+if __name__ == "__main__":    # pragma: no cover
     main()
