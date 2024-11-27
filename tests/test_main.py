@@ -53,6 +53,16 @@ def test_get_longest_chain(test_numbers):
     assert longest_chain[-1] == '893422'
 
 
+def test_main(test_numbers):
+    numbers = test_numbers
+    dict_of_two = first_two_dict(numbers)
+    longest_chain = get_longest_chain(numbers, dict_of_two)
+    result = fix_chain(longest_chain)
+    assert len(longest_chain) == 4
+    assert result == '664477654356893422'
+    assert len(result) == 18
+
+
 
 
 
