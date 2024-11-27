@@ -1,5 +1,6 @@
 import pytest
-from main import first_two_dict,get_numbers_from_file,get_longest_chain, fix_chain
+from main import first_two_dict,get_numbers_from_file,get_longest_chain, fix_chain, main
+from unittest.mock import patch, mock_open
 
 
 @pytest.fixture
@@ -53,14 +54,29 @@ def test_get_longest_chain(test_numbers):
     assert longest_chain[-1] == '893422'
 
 
-def test_main(test_numbers):
-    numbers = test_numbers
-    dict_of_two = first_two_dict(numbers)
-    longest_chain = get_longest_chain(numbers, dict_of_two)
-    result = fix_chain(longest_chain)
-    assert len(longest_chain) == 4
-    assert result == '664477654356893422'
-    assert len(result) == 18
+def test_main(capsys, tmp_path):
+    # Simulate the contents of numbers.txt
+    data = '776543\n435689\n564543\n893422\n664477\n668713'
+
+    # Create a temporary file
+    file_path = tmp_path / "numbers.txt"
+    file_path.write_text(data)
+
+    # Mock the open() call in get_numbers_from_file
+    with patch("builtins.open", mock_open(read_data=data)):
+        # Run the main function
+        with patch("main.get_numbers_from_file") as mock_get_numbers:
+            mock_get_numbers.return_value = ['776543', '435689', '564543', '893422', '664477', '668713']
+
+            main()
+
+    # Capture the output
+    captured = capsys.readouterr()
+
+    # Assert statements for the output
+    assert "Longest chain length: 4 numbers" in captured.out
+    assert "Result: 664477654356893422" in captured.out  # Adjust based on actual result logic
+    assert "There are 18 characters in result" in captured.out
 
 
 
