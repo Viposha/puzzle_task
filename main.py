@@ -14,7 +14,7 @@ def get_numbers_from_file(file):
 
 def first_two_dict(numbers):
     """ Creates dict with first two numbers as keys and values are numbers"""
-    first_two_dict = []
+    first_two_dict = {}
     for num in numbers:
         key = str(num)[:2]
         if key in first_two_dict:
